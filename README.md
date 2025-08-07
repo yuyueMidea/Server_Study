@@ -24,3 +24,22 @@ app.listen(3000, () => {
 });
 
 ```
+
+二、🐍 2. Python (Flask)
+```
+//安装依赖
+pip install flask
+```
+```
+//快速服务代码（app.py）：
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello from Flask!"
+
+if __name__ == '__main__':
+    app.run(port=5000)
+
+```
