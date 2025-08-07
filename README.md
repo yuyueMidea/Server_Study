@@ -3,7 +3,7 @@ Server side learning
 
 常用流行编程语言中，**快速启动一个 Web 服务（或本地服务）**的实现方式，适合快速开发/测试 API 或 Web 页面：
 
-一、🌐 1. JavaScript / Node.js (Express)
+一、🌐 JavaScript / Node.js (Express)
 
 ```
 //安装依赖：
@@ -25,7 +25,7 @@ app.listen(3000, () => {
 
 ```
 
-二、🐍 2. Python (Flask)
+二、🐍 Python (Flask)
 ```
 //安装依赖
 pip install flask
@@ -43,3 +43,31 @@ if __name__ == '__main__':
     app.run(port=5000)
 
 ```
+
+三、🧵  Go (net/http)
+```
+//快速服务代码（main.go）：
+package main
+import (
+    "fmt"
+    "net/http"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, "Hello from Go!")
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    http.ListenAndServe(":8080", nil)
+}
+
+```
+```
+//启动：
+go run main.go
+```
+
+
+
+
