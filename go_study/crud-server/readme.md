@@ -26,6 +26,8 @@ go run main.go
 
 服务器启动后会在8080端口运行，访问 http://localhost:8080 可以看到API文档页面。数据库文件users.db会自动创建在项目根目录。
 
+如果打包，执行`go build -o usercrud.exe`, 这样会在当前目录下生成一个名为 usercrud.exe 的可执行文件，不再依赖 .go 文件，你可以单独发送此文件到任意一台 Windows 机器运行（只要有同目录下的 index.html 存在）。
+
 **✨ 主要功能**
 
 🎯 完整的CRUD操作
