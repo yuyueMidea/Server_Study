@@ -1,8 +1,6 @@
-# 下载依赖
-go mod tidy
-
-#运行服务器
-go run main.go
+初始化项目
+- 下载依赖 `go mod tidy`
+- 运行服务器 `go run main.go`
 
 数据结构如下：
 ```
