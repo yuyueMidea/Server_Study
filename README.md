@@ -1,4 +1,3 @@
-# Server_Study
 Server side learning
 
 **各语言服务端实现方式对比表**
