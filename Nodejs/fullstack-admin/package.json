@@ -1,0 +1,24 @@
+{
+  "name": "fullstack-admin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vue3 + Fastify + SQLite3 全栈后台管理系统",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n SERVER,CLIENT -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "server:dev": "npm run dev -w server",
+    "client:dev": "npm run dev -w client",
+    "db:reset": "npm run db:reset -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
