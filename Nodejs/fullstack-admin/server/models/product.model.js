@@ -94,6 +94,18 @@ export const ProductModel = {
     return this.findById(id);
   },
 
+  /**
+   * 仅更新库存数量与 updated_at，供进销存模块在事务中调用。
+   * 不走通用 update()，避免入库/出库时误改其它字段。
+   */
+  adjustStock(id, newStock) {
+    const db = getDb();
+    db.prepare(
+      `UPDATE products SET stock = ?, updated_at = datetime('now', 'localtime') WHERE id = ?`
+    ).run(newStock, id);
+    return this.findById(id);
+  },
+
   remove(id) {
     const db = getDb();
     const result = db.prepare('DELETE FROM products WHERE id = ?').run(id);

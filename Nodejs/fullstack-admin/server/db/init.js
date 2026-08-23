@@ -20,6 +20,30 @@ const CREATE_INDEXES = [
   `CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);`,
 ];
 
+// ---- 进销存：库存流水表 ----
+// 每一次入库 / 出库都会写入一条不可变的流水记录，并原子性地同步更新 products.stock。
+// 简化说明：product_id 使用 ON DELETE CASCADE，即删除产品会级联清空其流水；
+// 生产系统通常会改为“禁止删除有流水的产品”或对产品做软删除，这里作为后续可扩展点。
+const CREATE_STOCK_RECORDS_TABLE = `
+CREATE TABLE IF NOT EXISTS stock_records (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id   INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  type         TEXT    NOT NULL CHECK (type IN ('in', 'out')),
+  quantity     INTEGER NOT NULL CHECK (quantity > 0),
+  reason       TEXT    NOT NULL,
+  before_stock INTEGER NOT NULL,
+  after_stock  INTEGER NOT NULL,
+  note         TEXT    DEFAULT '',
+  created_at   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+);
+`;
+
+const CREATE_STOCK_RECORD_INDEXES = [
+  `CREATE INDEX IF NOT EXISTS idx_stock_records_product ON stock_records(product_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_stock_records_type ON stock_records(type);`,
+  `CREATE INDEX IF NOT EXISTS idx_stock_records_created_at ON stock_records(created_at);`,
+];
+
 const SEED_PRODUCTS = [
   { name: '机械键盘 K1', category: '外设', price: 399, stock: 120, status: 'active', description: '87键茶轴机械键盘，支持热插拔。' },
   { name: '无线鼠标 M2', category: '外设', price: 129, stock: 300, status: 'active', description: '2.4G 无线连接，续航 6 个月。' },
@@ -44,6 +68,8 @@ const SEED_PRODUCTS = [
 function createSchema(db) {
   db.exec(CREATE_PRODUCTS_TABLE);
   for (const stmt of CREATE_INDEXES) db.exec(stmt);
+  db.exec(CREATE_STOCK_RECORDS_TABLE);
+  for (const stmt of CREATE_STOCK_RECORD_INDEXES) db.exec(stmt);
 }
 
 /**
@@ -81,6 +107,7 @@ export function initDatabase() {
  */
 if (process.argv.includes('--reset')) {
   const db = getDb();
+  db.exec('DROP TABLE IF EXISTS stock_records;');
   db.exec('DROP TABLE IF EXISTS products;');
   createSchema(db);
   seedIfEmpty(db);

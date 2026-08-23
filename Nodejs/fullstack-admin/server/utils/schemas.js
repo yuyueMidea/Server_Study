@@ -30,6 +30,29 @@ export const productListQuerySchema = {
   },
 };
 
+export const stockRecordBodySchema = {
+  type: 'object',
+  required: ['productId', 'type', 'quantity'],
+  additionalProperties: false,
+  properties: {
+    productId: { type: 'integer', minimum: 1 },
+    type: { type: 'string', enum: ['in', 'out'] },
+    quantity: { type: 'integer', minimum: 1, maximum: 1000000 },
+    reason: { type: 'string', maxLength: 50 },
+    note: { type: 'string', maxLength: 300 },
+  },
+};
+
+export const stockRecordListQuerySchema = {
+  type: 'object',
+  properties: {
+    page: { type: 'integer', minimum: 1, default: 1 },
+    pageSize: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+    productId: { type: 'integer', minimum: 1 },
+    type: { type: 'string', enum: ['in', 'out', ''] },
+  },
+};
+
 export const idParamSchema = {
   type: 'object',
   required: ['id'],

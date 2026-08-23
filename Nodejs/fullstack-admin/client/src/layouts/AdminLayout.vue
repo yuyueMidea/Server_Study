@@ -12,6 +12,9 @@
         <router-link to="/products" class="nav-item" active-class="active">
           <span class="dot" aria-hidden="true"></span>产品列表
         </router-link>
+        <router-link to="/stock-records" class="nav-item" active-class="active">
+          <span class="dot" aria-hidden="true"></span>进销存流水
+        </router-link>
       </nav>
       <div class="sidebar-footer">
         <p>Vue 3 · Fastify · SQLite3</p>
@@ -42,12 +45,15 @@ const pageTitle = computed(() => route.meta?.title || '产品库存管理后台'
 <style scoped>
 .shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
   width: 220px;
   flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
   background: var(--color-primary-strong);
   color: #fff;
   display: flex;
@@ -128,6 +134,8 @@ const pageTitle = computed(() => route.meta?.title || '产品库存管理后台'
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .topbar {
@@ -146,6 +154,8 @@ const pageTitle = computed(() => route.meta?.title || '产品库存管理后台'
 
 .content {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   padding: 24px 28px 40px;
 }
 
@@ -155,6 +165,8 @@ const pageTitle = computed(() => route.meta?.title || '产品库存管理后台'
   }
   .sidebar {
     width: 100%;
+    height: auto;
+    overflow-y: visible;
     flex-direction: row;
     align-items: center;
     padding: 10px 14px;

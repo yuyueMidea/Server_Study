@@ -1,15 +1,6 @@
 import { ProductModel } from '../models/product.model.js';
 import { NotFoundError, ValidationError } from '../utils/AppError.js';
-import { config } from '../config/index.js';
-
-function normalizePagination({ page, pageSize }) {
-  const safePage = Math.max(1, Number(page) || config.pagination.defaultPage);
-  const safePageSize = Math.min(
-    config.pagination.maxPageSize,
-    Math.max(1, Number(pageSize) || config.pagination.defaultPageSize)
-  );
-  return { page: safePage, pageSize: safePageSize };
-}
+import { normalizePagination } from '../utils/pagination.js';
 
 export const ProductService = {
   list(query) {

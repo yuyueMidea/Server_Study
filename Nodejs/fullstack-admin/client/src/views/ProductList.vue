@@ -21,7 +21,7 @@
         <button class="btn btn-ghost btn-sm" @click="onSearch">搜索</button>
         <button v-if="hasActiveFilters" class="btn btn-ghost btn-sm" @click="resetFilters">重置</button>
       </div>
-      <router-link :to="{ name: 'product-create' }" class="btn btn-primary">+ 新增产品</router-link>
+      <button class="btn btn-primary" @click="openCreate">+ 新增产品</button>
     </div>
 
     <div class="card table-card">
@@ -63,9 +63,9 @@
               </td>
               <td class="mono muted">{{ item.updated_at }}</td>
               <td class="ops">
-                <router-link :to="{ name: 'product-edit', params: { id: item.id } }" class="btn btn-ghost btn-sm">
-                  编辑
-                </router-link>
+                <button class="btn btn-ghost btn-sm" @click="openStockModal(item, 'in')">入库</button>
+                <button class="btn btn-ghost btn-sm" @click="openStockModal(item, 'out')">出库</button>
+                <button class="btn btn-ghost btn-sm" @click="openEdit(item)">编辑</button>
                 <button class="btn btn-danger btn-sm" @click="askDelete(item)">删除</button>
               </td>
             </tr>
@@ -80,6 +80,16 @@
         />
       </template>
     </div>
+
+    <ProductModal :open="modalOpen" :product-id="editingId" @close="closeModal" @saved="onSaved" />
+
+    <StockRecordModal
+      :open="stockModalOpen"
+      :product="stockModalProduct"
+      :type="stockModalType"
+      @close="closeStockModal"
+      @saved="onStockSaved"
+    />
 
     <ConfirmDialog
       :open="deleteTarget !== null"
@@ -99,6 +109,8 @@ import ErrorState from '@/components/ErrorState.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import Pagination from '@/components/Pagination.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import ProductModal from '@/components/ProductModal.vue';
+import StockRecordModal from '@/components/StockRecordModal.vue';
 import { toast } from '@/utils/toast';
 
 const list = ref([]);
@@ -107,6 +119,15 @@ const loading = ref(true);
 const error = ref('');
 const deleteTarget = ref(null);
 const deleting = ref(false);
+
+// 新增 / 编辑弹框
+const modalOpen = ref(false);
+const editingId = ref(null);
+
+// 入库 / 出库弹框
+const stockModalOpen = ref(false);
+const stockModalProduct = ref(null);
+const stockModalType = ref('in');
 
 const filters = reactive({ keyword: '', category: '', status: '' });
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 });
@@ -166,6 +187,41 @@ function onPageSizeChange(size) {
   pagination.pageSize = size;
   pagination.page = 1;
   load();
+}
+
+function openCreate() {
+  editingId.value = null;
+  modalOpen.value = true;
+}
+
+function openEdit(item) {
+  editingId.value = item.id;
+  modalOpen.value = true;
+}
+
+function closeModal() {
+  modalOpen.value = false;
+}
+
+async function onSaved() {
+  modalOpen.value = false;
+  await load();
+  await loadCategories();
+}
+
+function openStockModal(item, type) {
+  stockModalProduct.value = item;
+  stockModalType.value = type;
+  stockModalOpen.value = true;
+}
+
+function closeStockModal() {
+  stockModalOpen.value = false;
+}
+
+async function onStockSaved() {
+  stockModalOpen.value = false;
+  await load();
 }
 
 function askDelete(item) {
